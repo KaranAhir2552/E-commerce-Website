@@ -1,3 +1,4 @@
+import Cart from "./features/cart/Cart";
 import Home from "./page/Home";
 import LoginPage from "./page/LoginPage";
 import SignupPage from "./page/SignupPage";
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  {
+    path: "/cart",
+    element: <Cart />,
   },
 ]);
 
