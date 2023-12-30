@@ -1,4 +1,5 @@
-import Cart from "./features/cart/Cart";
+import CartPage from "./page/CartPage";
+import Checkout from "./page/Checkout";
 import Home from "./page/Home";
 import LoginPage from "./page/LoginPage";
 import SignupPage from "./page/SignupPage";
@@ -22,7 +23,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/cart",
-    element: <Cart />,
+    element: <CartPage />,
+  },
+  {
+    path: "/checkout",
+    element: <Checkout />,
   },
 ]);
 
