@@ -14,7 +14,6 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
 import {
-  fetchAllProductsAsync,
   fetchProductByFilterAsync,
   selectAllProducts,
 } from "../productSlice";
@@ -241,26 +240,32 @@ function classNames(...classes) {
 export default function ProductList() {
   const dispatch = useDispatch();
   const [filter, setFilter] = useState({});
+  const [sort, setSort] = useState({});
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const products = useSelector(selectAllProducts);
 
 
   const handleFilter = (e, section, option) => {
-    const newFilter = { ...filter, [section.id]: option.value };
+    const newFilter = { ...filter}
+    if(e.target.checked){
+      newFilter[section.id] = option.value
+    }
+    else {
+      delete newFilter[section.id]
+    }   
     setFilter(newFilter);
-    dispatch(fetchProductByFilterAsync(newFilter));
   };
 
   const handleSort = (e, option) => {
-    const newFilter = { ...filter, _sort: option.sort, _order: option.order };
-    setFilter(newFilter);
+    const newFilter = { _sort: option.sort, _order: option.order };
+    setSort(newFilter);
     dispatch(fetchProductByFilterAsync(newFilter));
   };
 
   useEffect(() => {
-    dispatch(fetchAllProductsAsync());
-  }, [dispatch]);
+    dispatch(fetchProductByFilterAsync(filter,sort));
+  }, [dispatch,filter,sort]);
 
   return (
     <div>
@@ -273,6 +278,7 @@ export default function ProductList() {
             <MobileFilter
               mobileFiltersOpen={mobileFiltersOpen}
               setMobileFiltersOpen={setMobileFiltersOpen}
+              handleFilter={handleFilter}
             />
 
             <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -375,7 +381,7 @@ export default function ProductList() {
   );
 }
 
-function MobileFilter({ mobileFiltersOpen, setMobileFiltersOpen }) {
+function MobileFilter({ mobileFiltersOpen, setMobileFiltersOpen, handleFilter }) {
   return (
     <Transition.Root show={mobileFiltersOpen} as={Fragment}>
       <Dialog
@@ -460,6 +466,7 @@ function MobileFilter({ mobileFiltersOpen, setMobileFiltersOpen }) {
                                   name={`${section.id}[]`}
                                   defaultValue={option.value}
                                   type="checkbox"
+                                  onChange={(e)=>handleFilter(e,section, option)}
                                   defaultChecked={option.checked}
                                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                 />
@@ -544,7 +551,7 @@ function DesktopFilter({ handleFilter }) {
 
 function PaginationFilter() {
   return (
-    <div>
+
       <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
         <div className="flex flex-1 justify-between sm:hidden">
           <a
@@ -606,7 +613,7 @@ function PaginationFilter() {
           </div>
         </div>
       </div>
-    </div>
+
   );
 }
 

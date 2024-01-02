@@ -6,7 +6,7 @@ export function fetchAllProduct() {
   }
   );
 }
-export function fetchProductByFilter(filter) {
+export function fetchProductByFilter(filter, sort) {
   let query = '';
   for(let key in filter) {
     query += `${key}=${filter[key]}&`
