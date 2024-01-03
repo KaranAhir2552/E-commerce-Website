@@ -249,22 +249,30 @@ export default function ProductList() {
   const handleFilter = (e, section, option) => {
     const newFilter = { ...filter}
     if(e.target.checked){
-      newFilter[section.id] = option.value
+      if(newFilter[section.id])
+        newFilter[section.id].push(option.value)
+      else 
+        newFilter[section.id] = [option.value]
     }
     else {
-      delete newFilter[section.id]
+      const index = newFilter[section.id].findIndex(el => el === option.value)
+      console.log(newFilter[section.id])
+      console.log(option.value)
+      console.log(index)
+      newFilter[section.id].splice(index, 1)
+
+      console.log(newFilter)
     }   
-    setFilter(newFilter);
+    setFilter(newFilter)
   };
 
   const handleSort = (e, option) => {
     const newFilter = { _sort: option.sort, _order: option.order };
     setSort(newFilter);
-    dispatch(fetchProductByFilterAsync(newFilter));
   };
 
   useEffect(() => {
-    dispatch(fetchProductByFilterAsync(filter,sort));
+    dispatch(fetchProductByFilterAsync({filter,sort}));
   }, [dispatch,filter,sort]);
 
   return (
